@@ -2,6 +2,9 @@ from rest_framework import serializers
 
 from gateway.models import User
 
+"""
+The serializer for make Input data Readable and Always satays in this shape! For User Registertion And Also saves The user on DataBase
+"""
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(style={'input_type':'password'},write_only=True)

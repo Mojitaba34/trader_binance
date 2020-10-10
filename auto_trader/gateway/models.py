@@ -6,6 +6,9 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
+"""
+Custom UserManager For register SuperUser
+"""
 class MyUserManager(BaseUserManager):
     def create_user(self, username, email,fullname, password =None):
         if not username:
@@ -32,19 +35,21 @@ class MyUserManager(BaseUserManager):
         user.is_admin = True
         user.is_staff = True
         user.is_superuser = True
+        user.is_active = True
         user.save(using = self._db)
         return user
             
             
 
-
+"""
+Custom UserModel 
+"""
 class User(AbstractBaseUser):
 
     username = models.CharField(max_length=100,unique=True)
     fullname = models.CharField(max_length=100)
     email = models.EmailField(max_length=254,unique=True)
-    # password = models.CharField(max_length=50)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     last_login = models.DateTimeField(auto_now=True)
     date_join = models.DateField(auto_now_add=True)
     is_admin = models.BooleanField(default=False)
@@ -65,6 +70,10 @@ class User(AbstractBaseUser):
         return True
 
 
+
+"""
+Create Token And Build a Token_Table To insert the Token and userId init
+"""
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_token(sender, instance=None, created = False, **kwargs):
     if created:
